@@ -21,6 +21,7 @@ recopie aucun contenu ; il oriente vers le document de référence.
 | Rappels opérationnels spécifiques au dépôt | [`../AGENTS.md`](../AGENTS.md) (règles 1-13) |
 | Instructions agents IA | [`../AGENTS.md`](../AGENTS.md) |
 | Historique détaillé | Git (commits) |
+| Branches dev, worktrees et tags d'image | [`DEVELOPMENT-BRANCHES.md`](DEVELOPMENT-BRANCHES.md) |
 
 ## Règles du système documentaire
 

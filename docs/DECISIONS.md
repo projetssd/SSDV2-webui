@@ -961,6 +961,20 @@ pointe vers son remplaçant. Une décision non tranchée reste dans « Décision
   L'image WebUI doit être reconstruite pour disposer de la commande et du dialogue.
   Aucun déploiement ou publication automatique dans ce changement.
 
+## ADR-0036 — Branches dev isolées et séparation des tags Docker
+
+- **Statut** : accepté, 2026-11-09, sur demande explicite de l'utilisateur.
+- **Décision** : sauvegarder l'ensemble des changements locaux sur `dev` dans les deux
+  dépôts, tester dans des worktrees dédiés et pousser uniquement ces branches. Cette
+  autorisation remplace l'ancienne restriction ADR-0010 pour ce lot. Ni fusion dans
+  les branches principales, ni déploiement ne sont inclus.
+- **Publication** : sur le workflow de dev, branche dev → `:dev`, main → `:latest`,
+  version → tag de version ; PR et autres références → aucune publication. Les
+  lancements manuels suivent la même politique sans tag libre. Les règles de main
+  actuellement publiées restent inchangées jusqu'à une éventuelle fusion.
+- **Référence opérationnelle** : `DEVELOPMENT-BRANCHES.md` ; politique exécutable
+  `scripts/image-tags.sh`, tests `scripts/tests/test_image_tags.py`.
+
 ## Décisions ouvertes
 
 À trancher explicitement puis consigner en ADR (voir brief §72) :

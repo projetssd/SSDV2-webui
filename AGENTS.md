@@ -78,8 +78,9 @@ agent), §72 (décisions à trancher), §75 (stack).
     depuis un nom de fonction. **Exception encadrée (ADR-0026)** : les mutations
     interactives `install`/`reinstall`/`recreate` passent par le dispatcher SSDV2 direct
     (logs live + saisie guidée), allowlist stricte dans `app/adapters/ssdv2_bash.py`.
-11. Ne jamais créer de branche ni de pull request sur `projetssd/ssdv2` tant que le projet
-    n'est pas finalisé (ADR-0010) : le développement lié à SSDV2 reste local.
+11. Le travail du lot catalogue/QR est autorisé sur `dev` dans les deux dépôts
+    (demande utilisateur du 2026-11-09, ADR-0036). Utiliser les worktrees `-dev` ;
+    ne pas modifier ni pousser `master`/`main`, fusionner ou déployer sans demande.
 12. Tout flux SSE respecte les invariants d'ADR-0030 : générateur `async`, heartbeat
     (`: keep-alive`, 25 s), `id:` + reprise `Last-Event-ID`/`?after=`, fermeture bornée par
     `WEBUI_SSE_MAX_SECONDS`, session courte (`StreamUser`) et réponse
@@ -119,6 +120,9 @@ agent), §72 (décisions à trancher), §75 (stack).
   composants transverses (`src/components/app/`).
 
 ## Documentation et synchronisation
+
+- Développement isolé et publication `:dev` : voir `docs/DEVELOPMENT-BRANCHES.md`.
+  Synchroniser le CLI avec `SSDV2_REPO=/home/kesurof/seedbox-compose-dev`.
 
 - Lire `docs/README.md` et le document de référence du domaine avant toute modification.
 - Toute modification fonctionnelle aligne code, tests et documentation dans le même
