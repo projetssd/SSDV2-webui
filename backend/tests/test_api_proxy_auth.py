@@ -37,6 +37,37 @@ def test_proxy_accepts_trusted_identity(proxy_mode: None) -> None:
     }
 
 
+def test_proxy_can_reveal_qr_with_csrf(proxy_mode: None) -> None:
+    from app.deps import get_ssdv2ctl
+    from app.main import app
+    from tests.conftest import FakeRunner
+    from tests.test_peer_qr import PNG
+
+    runner = FakeRunner(payload={"app": "wireguard", "peer": "1", "png_base64": PNG})
+    previous = app.dependency_overrides.get(get_ssdv2ctl)
+    app.dependency_overrides[get_ssdv2ctl] = lambda: runner
+    try:
+        with _client("172.18.0.5") as client:
+            identity = {"X-Auth-Request-User": "alice"}
+            assert client.get("/api/v1/auth/me", headers=identity).status_code == 200
+            token = client.cookies.get("ssdv2_webui_csrf")
+            assert token
+            assert (
+                client.post("/api/v1/apps/wireguard/peer-qr", headers=identity).status_code == 403
+            )
+            response = client.post(
+                "/api/v1/apps/wireguard/peer-qr",
+                headers={**identity, "x-csrf-token": token},
+            )
+            assert response.status_code == 200
+            assert "no-store" in response.headers["cache-control"]
+    finally:
+        if previous is None:
+            app.dependency_overrides.pop(get_ssdv2ctl, None)
+        else:
+            app.dependency_overrides[get_ssdv2ctl] = previous
+
+
 def test_proxy_fail_closed_without_header(proxy_mode: None) -> None:
     with _client("172.18.0.5") as client:
         assert client.get("/api/v1/auth/me").status_code == 401

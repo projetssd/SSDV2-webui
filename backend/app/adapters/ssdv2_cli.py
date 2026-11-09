@@ -10,6 +10,7 @@ from app.core.config import Settings
 ALLOWED_COMMANDS = {
     ("apps", "list"),
     ("app", "status"),
+    ("app", "peer-qr"),
     ("app", "install"),
     ("app", "remove"),
     ("app", "reinstall"),

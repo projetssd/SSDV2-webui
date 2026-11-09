@@ -77,6 +77,13 @@ def _resolve_user(
         identity = proxy_identity(request, settings)
         if identity is None:
             return None
+        if response is not None and not request.cookies.get(CSRF_COOKIE):
+            response.set_cookie(
+                CSRF_COOKIE,
+                new_token(),
+                max_age=settings.session_ttl_hours * 3600,
+                **_csrf_cookie_options(settings),
+            )
         return AuthenticatedUser(username=identity, internal_auth=False)
 
     token = request.cookies.get(SESSION_COOKIE)

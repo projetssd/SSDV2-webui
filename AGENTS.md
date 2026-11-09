@@ -64,6 +64,8 @@ agent), §72 (décisions à trancher), §75 (stack).
    HTTP ; noms d'apps issus du catalogue SSDV2.
 6. Ne jamais logger ni renvoyer un secret (token Cloudflare, mot de passe Vault, cookies,
    Authorization). Redaction centralisée ; secrets masqués en UI.
+   Exception explicite ADR-0035 : affichage du QR WireGuard à la demande, authentifié,
+   protégé CSRF, sans stockage ni journalisation du contenu.
 7. Opérations hôte (UFW, iptables, apt, systemd, /etc, kernel, users) hors MVP : pas de
    `--privileged`, `/:/host`, `nsenter` sans décision architecturale explicite.
 8. Opérations longues = jobs non bloquants (worker de mutation unique, file en mémoire +

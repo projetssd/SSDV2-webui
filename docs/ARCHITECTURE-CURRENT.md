@@ -6,6 +6,17 @@
 
 ## Composants réels
 
+### QR WireGuard (ADR-0035, ajout du 2026-11-09)
+
+La fiche de l'application WireGuard installée propose l'affichage explicite du QR du
+premier pair. `POST /api/v1/apps/wireguard/peer-qr`, authentifié et protégé CSRF, appelle
+le service `peer_qr` puis la commande allowlistée `ssdv2ctl app peer-qr wireguard`.
+La réponse privée est non stockable ; le dialogue efface son état à la fermeture.
+Aucun job, journal ou SSE ne transporte ce contenu. Voir ADR-0035 pour le contrat,
+les limites et la synchronisation du CLI embarqué.
+
+### Services existants
+
 - `backend/` : FastAPI (Python 3.13), configuration par variables d'environnement,
   `GET /health` et `/api/v1/health`, auth admin (Argon2id, sessions serveur en SQLite,
   CSRF double-submit, rate limiting en mémoire), `GET /api/v1/apps` agrégeant catalogue,

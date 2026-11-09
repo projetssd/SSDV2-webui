@@ -931,6 +931,36 @@ pointe vers son remplaçant. Une décision non tranchée reste dans « Décision
 - **Références** : ADR-0020, ADR-0021 ; `.github/workflows/ci.yml` ; `README.md` ;
   `ARCHITECTURE-CURRENT.md`.
 
+## ADR-0035 — Restitution explicite du QR code WireGuard
+
+- **Statut** : accepté, 2026-11-09 ; affichage protégé CLI/WebUI demandé par l'utilisateur.
+- **Contexte** : le parcours SSDV2 demandait de consulter les logs Docker pour scanner
+  le QR du premier pair. Ce QR contient des identifiants VPN ; il ne doit pas être
+  versé aux journaux persistants ni aux sorties des jobs.
+- **Décision** : exception limitée à la règle de non-retour des secrets. Le bouton
+  « Afficher le QR code » de la fiche WireGuard appelle
+  `POST /api/v1/apps/wireguard/peer-qr` avec l'authentification existante et le CSRF
+  double-submit. En mode proxy, une identité de confiance reçoit également le cookie
+  CSRF depuis les endpoints authentifiés. L'API utilise un service backend et la
+  commande allowlistée `ssdv2ctl app peer-qr wireguard`, jamais le dispatcher de jobs.
+  Le CLI lit uniquement `/config/peer1/peer1.png` du conteneur WireGuard ; l'archive
+  est bornée à 1 Mio, le PNG à 512 Kio, et la lecture à 10 secondes. Aucune extraction
+  sur disque, aucun chemin client ni lien symbolique accepté.
+- **Restitution** : JSON `{app: "wireguard", peer: "1", png_base64: "…"}`, réponse
+  `no-store, private`, erreurs génériques sans stderr. Le frontend conserve le PNG
+  uniquement dans l'état local du dialogue et l'efface à la fermeture ; aucune mise
+  en cache TanStack, SQLite, stockage navigateur, SSE ou historique. La CLI interactive
+  utilise le terminal de contrôle hors stdout Ansible. `LOG_CONFS=false` coupe les QR
+  dans les futurs logs Docker ; les anciens logs ne sont pas effacés automatiquement.
+- **Limites** : premier pair numérique de l'intégration standard, sans export de
+  configuration brute, gestion de pairs nommés, rotation de clés ou nouvelle permission
+  administrateur. L'accès reste celui de l'administration authentifiée existante.
+  La commande CLI a une sortie sensible : ne pas l'utiliser dans un job ou une
+  collecte de logs. Les anciens QR déjà journalisés restent hors du présent lot.
+- **Livraison** : copie vendored de `ssdv2ctl`, OpenAPI et types frontend synchronisés.
+  L'image WebUI doit être reconstruite pour disposer de la commande et du dialogue.
+  Aucun déploiement ou publication automatique dans ce changement.
+
 ## Décisions ouvertes
 
 À trancher explicitement puis consigner en ADR (voir brief §72) :

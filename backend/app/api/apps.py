@@ -4,11 +4,19 @@ import threading
 from collections.abc import AsyncIterator
 
 import docker
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from fastapi.responses import StreamingResponse
 
 from app.adapters.ssdv2_cli import Ssdv2CtlError
-from app.deps import CurrentUser, DbDep, DockerDep, SettingsDep, Ssdv2CtlDep, StreamUser
+from app.deps import (
+    CurrentUser,
+    DbDep,
+    DockerDep,
+    SettingsDep,
+    Ssdv2CtlDep,
+    StreamUser,
+    require_csrf,
+)
 from app.schemas.app import (
     AppAuthOut,
     AppDetailOut,
@@ -22,6 +30,7 @@ from app.schemas.app import (
     LogsOut,
 )
 from app.schemas.job import JobOut
+from app.schemas.peer_qr import PeerQrOut
 from app.services.app_history import build_app_history
 from app.services.app_overview import load_app_states
 from app.services.app_state import WARNING_SSDDB_UNAVAILABLE, build_app_detail
@@ -36,6 +45,7 @@ from app.services.docker_state import (
 )
 from app.services.domain import get_global_domain
 from app.services.jobs import job_manager
+from app.services.peer_qr import PeerQrError, read_peer_qr
 from app.services.registries import read_registries
 from app.services.ssddb import read_ssddb
 
@@ -43,6 +53,27 @@ router = APIRouter(prefix="/apps", tags=["apps"])
 
 HEARTBEAT_SECONDS = 25
 SSE_HEADERS = {"Cache-Control": "no-cache", "X-Accel-Buffering": "no"}
+
+
+@router.post("/wireguard/peer-qr", response_model=PeerQrOut)
+def reveal_wireguard_peer_qr(
+    response: Response,
+    runner: Ssdv2CtlDep,
+    _user: CurrentUser,
+    _csrf: None = Depends(require_csrf),
+) -> PeerQrOut:
+    headers = {
+        "Cache-Control": "no-store, private, max-age=0",
+        "Pragma": "no-cache",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "no-referrer",
+    }
+    try:
+        result = read_peer_qr(runner)
+    except PeerQrError as exc:
+        raise HTTPException(exc.status_code, exc.message, headers=headers) from None
+    response.headers.update(headers)
+    return result
 
 
 @router.get("", response_model=list[AppStateOut])

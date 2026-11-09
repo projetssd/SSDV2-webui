@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/api/v1/apps/wireguard/peer-qr": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reveal Wireguard Peer Qr */
+        post: operations["reveal_wireguard_peer_qr_api_v1_apps_wireguard_peer_qr_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/apps": {
         parameters: {
             query?: never;
@@ -739,6 +756,23 @@ export interface paths {
         patch: operations["update_security_api_v1_security_patch"];
         trace?: never;
     };
+    "/api/v1/security-watch/inventory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download Inventory */
+        get: operations["download_inventory_api_v1_security_watch_inventory_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/setup/status": {
         parameters: {
             query?: never;
@@ -1437,6 +1471,23 @@ export interface components {
             /** New Password */
             new_password: string;
         };
+        /** PeerQrOut */
+        PeerQrOut: {
+            /**
+             * App
+             * @default wireguard
+             * @constant
+             */
+            app: "wireguard";
+            /**
+             * Peer
+             * @default 1
+             * @constant
+             */
+            peer: "1";
+            /** Png Base64 */
+            png_base64: string;
+        };
         /** RegistriesOut */
         RegistriesOut: {
             /** Containers */
@@ -1747,6 +1798,26 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    reveal_wireguard_peer_qr_api_v1_apps_wireguard_peer_qr_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeerQrOut"];
+                };
+            };
+        };
+    };
     list_apps_api_v1_apps_get: {
         parameters: {
             query?: never;
@@ -3001,6 +3072,24 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
+            };
+        };
+    };
+    download_inventory_api_v1_security_watch_inventory_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

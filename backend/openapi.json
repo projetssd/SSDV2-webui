@@ -5,6 +5,27 @@
     "version": "0.1.0"
   },
   "paths": {
+    "/api/v1/apps/wireguard/peer-qr": {
+      "post": {
+        "tags": [
+          "apps"
+        ],
+        "summary": "Reveal Wireguard Peer Qr",
+        "operationId": "reveal_wireguard_peer_qr_api_v1_apps_wireguard_peer_qr_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeerQrOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/apps": {
       "get": {
         "tags": [
@@ -1751,6 +1772,20 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/security-watch/inventory": {
+      "get": {
+        "tags": [
+          "security-watch"
+        ],
+        "summary": "Download Inventory",
+        "operationId": "download_inventory_api_v1_security_watch_inventory_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response"
           }
         }
       }
@@ -3601,6 +3636,33 @@
           "new_password"
         ],
         "title": "PasswordChangeRequest"
+      },
+      "PeerQrOut": {
+        "properties": {
+          "app": {
+            "type": "string",
+            "const": "wireguard",
+            "title": "App",
+            "default": "wireguard"
+          },
+          "peer": {
+            "type": "string",
+            "const": "1",
+            "title": "Peer",
+            "default": "1"
+          },
+          "png_base64": {
+            "type": "string",
+            "maxLength": 699052,
+            "minLength": 1,
+            "title": "Png Base64"
+          }
+        },
+        "type": "object",
+        "required": [
+          "png_base64"
+        ],
+        "title": "PeerQrOut"
       },
       "RegistriesOut": {
         "properties": {

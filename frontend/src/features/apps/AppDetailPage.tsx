@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AppActions } from '@/features/apps/AppActions'
 import { AppDetailView } from '@/features/apps/AppDetailView'
+import { WireguardQr } from '@/features/apps/WireguardQr'
 import { useAppAuth } from '@/features/apps/useAppAuth'
 import { useBackups } from '@/features/backups/useBackups'
 import { useAppAction } from '@/features/jobs/useJobs'
@@ -63,7 +64,10 @@ export function AppDetailPage() {
       history={history.data?.events}
       env={env.data?.variables}
       storage={storage.data}
-      actions={<AppActions app={detail.data} />}
+      actions={<>
+        {app === 'wireguard' && detail.data.installed && <WireguardQr key={app} />}
+        <AppActions app={detail.data} />
+      </>}
       onRecreate={detail.data.installed ? handleRecreate : undefined}
     />
   )

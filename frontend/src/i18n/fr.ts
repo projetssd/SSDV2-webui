@@ -1,4 +1,10 @@
 export const fr = {
+  wireguardQr: {
+    reveal: 'Afficher le QR code',
+    title: 'QR code WireGuard — pair 1',
+    description: 'Ce QR code donne accès à votre VPN. Scannez-le dans WireGuard, puis fermez cette fenêtre.',
+    error: 'QR code indisponible. Réessayez après le démarrage de WireGuard.',
+  },
   common: {
     loading: 'Chargement…',
     error: 'Erreur',
